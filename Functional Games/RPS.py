@@ -50,20 +50,24 @@ def main():
     sentinel = True
     while(sentinel):
         player1Choice = make_choice()
+        if(player1Choice == EXIT):
+            print("Player 1 has quit...\nThanks for playing!")
+            break
         player2Choice = make_choice()
-        if(player1Choice == EXIT or player2Choice == EXIT):
-            sentinel = False
+        if(player2Choice == EXIT):
+            print("Player 2 has quit...\nThanks for Playing!")
+            break
         elif (__gt__(player1Choice, player2Choice)):
-            print("\nPlayer 1 chose:\t" + player1Choice + "\n\
-    Player 2 chose:\t" + player2Choice + "\n\
-    Player 1 Wins!\n\n")
+            print("\nPlayer 1 chose:\t" + str(player1Choice))
+            print("Player 2 chose:\t" + str(player2Choice))
+            print("Player 1 Wins!\n\n")
         elif (__eq__(player1Choice, player2Choice)):
-            print("\nPlayer 1 chose:\t" + player1Choice + "\n\
-    Player 2 chose:\t" + player2Choice + "\n\
-    It's a Tie!\n\n")
+            print("\nPlayer 1 chose:\t" + str(player1Choice))
+            print("Player 2 chose:\t" + str(player2Choice))
+            print("It's a Tie!\n\n")
         else:
-            print("\nPlayer 1 chose:\t" + player1Choice + "\n\
-    Player 2 chose:\t" + player2Choice + "\n\
-    Player 2 Wins!\n\n")
+            print("\nPlayer 1 chose:\t" + str(player1Choice))
+            print("Player 2 chose:\t" + str(player2Choice))
+            print("Player 2 Wins!\n\n")
 
 main()
