@@ -200,7 +200,7 @@ def main():
             'm' -> Mage\n\
             'p' -> Paladin\n>>>\t")
         if(player1Input == 'r'):
-            player1 = Character("Rogue", 35,99, 2, POISON)
+            player1 = Character("Rogue", 35, 7, 2, POISON)
             sentinel = False
         elif(player1Input == 'm'):
             player1 = Character("Mage", 40, 5, 4, FIRE)
