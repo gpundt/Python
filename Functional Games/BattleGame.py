@@ -5,7 +5,7 @@ FIRE = "fire"
 
 
 class Character:
-    __slots__ = ['__name', '__hp', '__atk', '__def', '__max_hp', '__damage_type', '__poison_counter']
+    __slots__ = ['__name', '__hp', '__atk', '__def', '__max_hp', '__damage_type', '__poison_counter', '__alive']
     def __init__(self, name, hp, atk, defence, damage_type):
         self.__name = name
         self.__hp = hp
@@ -14,6 +14,8 @@ class Character:
         self.__max_hp = hp
         self.__damage_type = damage_type
         self.__poison_counter = 0
+        self.__alive = True
+
 
     def getName(self):
         return str(self.__name)
@@ -49,11 +51,12 @@ class Character:
             self.__damage_type = NORMAL
         elif(input == "fire"):
             self.__damage_type = FIRE
-        
-
 
     def isAlive(self):
-        return self.__hp > 0
+        if(self.getHP > 0):
+            return True
+        else:
+            return False
 
     #this function will lower the character's HP, if they are dead, a message will print
     #if damage is below 0 due to high DEF, it will just deal 0 damage
@@ -73,6 +76,9 @@ class Character:
             damageTaken = 0
         newHP = self.__hp - damageTaken
         self.setHP(newHP)
+
+        if(self.__hp < 0):
+            self.setHP(0)
         
         #prints character after all effects have been accounted for
         print(self.__name + " took " + str(damageTaken) + " points of " + str(damage_type) + " damage!")
@@ -127,39 +133,53 @@ class Character:
         print(self.__name +"'s DEF has been raised!\n")
 
     def makeChoice(self, opponent):
-        choice = input(self.__name + ", Enter a command:\n\
-            'attack' -> deal your ATK stat to an enemy\n\
-            'type' -> change your damage type\n\
-            'heal' -> Heal 25% max health\n\
-            >>>\t")
-        if(choice == 'heal'):
-            print('\n')
-            self.heal()
-        elif(choice == 'type'):
-            print('\n')
-            damage_change = input("Change your damage type:\n\
-                'poison' -> deal poison damage (increasing damage over time)\n\
-                'holy' -> deal holy damage (lowers enemy ATK stat)\n\
-                'fire' -> deal fire damage (lowers enemy DEF stat)\n\
-                'normal' -> deal normal damage (normal damage)\n\
+        while(True):
+            choice = input(self.__name + ", Enter a command:\n\
+                'attack' -> deal your ATK stat to an enemy\n\
+                'type' -> change your damage type\n\
+                'heal' -> Heal 25% max health\n\
                 >>>\t")
-            if (damage_change == 'poison'):
+            if(choice == 'heal'):
                 print('\n')
-                self.setDamageType(POISON)
-            elif(damage_change == 'holy'):
+                self.heal()
+                break
+            elif(choice == 'type'):
                 print('\n')
-                self.setDamageType(HOLY)
-            elif(damage_change == 'fire'):
-                print('\n')
-                self.setDamageType(FIRE)
+                damage_change = input("Change your damage type:\n\
+                    'poison' -> deal poison damage (increasing damage over time)\n\
+                    'holy' -> deal holy damage (lowers enemy ATK stat)\n\
+                    'fire' -> deal fire damage (lowers enemy DEF stat)\n\
+                    'normal' -> deal normal damage (normal damage)\n\
+                    >>>\t")
+                if (damage_change == 'poison'):
+                    print('\n')
+                    self.setDamageType(POISON)
+                    print(self.__name + " has changed their damage type to " + str(self.__damage_type) + "\n")
+                    break
+                elif(damage_change == 'holy'):
+                    print('\n')
+                    self.setDamageType(HOLY)
+                    print(self.__name + " has changed their damage type to " + str(self.__damage_type) + "\n")
+                    break
+                elif(damage_change == 'fire'):
+                    print('\n')
+                    self.setDamageType(FIRE)
+                    print(self.__name + " has changed their damage type to " + str(self.__damage_type) + "\n")
+                    break
+                elif(damage_change == 'normal'):
+                    print('\n')
+                    self.setDamageType(NORMAL)
+                    print(self.__name + " has changed their damage type to " + str(self.__damage_type) + "\n")
+                    break
+                else:
+                    print("Please enter a valid choice...\n\n")
+                
+                
+            elif(choice == 'attack'):
+                opponent.takeDamage(self.__atk, self.__damage_type)
+                break
             else:
-                print('\n')
-                self.setDamageType(NORMAL)
-            print(self.__name + " has changed their damage type to " + str(self.__damage_type) + "\n")
-        elif(choice == 'attack'):
-            opponent.takeDamage(self.__atk, self.__damage_type)
-        else:
-            print("Invalid Choice")
+                print("Invalid Choice")
 
             
     #String representation of the object
@@ -172,38 +192,60 @@ class Character:
 
     
 def main():
-    player1Input = input("Player 1, Choose your class:\n\
-        'b' -> Barbarian\n\
-        'r' -> Rogue\n\
-        'm' -> Mage\n\
-        'p' -> Paladin\n>>>\t")
-    if(player1Input == 'r'):
-        player1 = Character("Rogue", 35, 7, 2, POISON)
-    elif(player1Input == 'm'):
-        player1 = Character("Mage", 40, 5, 4, FIRE)
-    elif(player1Input == 'p'):
-        player1 = Character("Paladin", 50, 6, 5, HOLY)
-    else:
-        player1 = Character("Barbarian", 60, 7, 6, NORMAL)
+    sentinel = True
+    while(sentinel):
+        player1Input = input("Player 1, Choose your class:\n\
+            'b' -> Barbarian\n\
+            'r' -> Rogue\n\
+            'm' -> Mage\n\
+            'p' -> Paladin\n>>>\t")
+        if(player1Input == 'r'):
+            player1 = Character("Rogue", 35,99, 2, POISON)
+            sentinel = False
+        elif(player1Input == 'm'):
+            player1 = Character("Mage", 40, 5, 4, FIRE)
+            sentinel = False
+        elif(player1Input == 'p'):
+            player1 = Character("Paladin", 50, 6, 5, HOLY)
+            sentinel = False
+        elif(player1Input == "b"):
+            player1 = Character("Barbarian", 60, 7, 6, NORMAL)
+            sentinel = False
+        else:
+            print("Please enter a valid choice...\n\n")
 
-    player2Input = input("Player 2, Choose your class:\n\
-        'b' -> Barbarian\n\
-        'r' -> Rogue\n\
-        'm' -> Mage\n\
-        'p' -> Paladin\n>>>\t")
-    if(player2Input == 'r'):
-        player2 = Character("Rogue", 35, 7, 2, POISON)
-    elif(player2Input == 'm'):
-        player2 = Character("Mage", 40, 5, 4, FIRE)
-    elif(player2Input == 'p'):
-        player2 = Character("Paladin", 50, 6, 5, HOLY)
-    else:
-        player2 = Character("Barbarian", 60, 5, 6, NORMAL)
+    sentinel = True
+    while(sentinel):
+        player2Input = input("Player 2, Choose your class:\n\
+            'b' -> Barbarian\n\
+            'r' -> Rogue\n\
+            'm' -> Mage\n\
+            'p' -> Paladin\n>>>\t")
+        if(player2Input == 'r'):
+            player2 = Character("Rogue", 35, 7, 2, POISON)
+            sentinel = False
+        elif(player2Input == 'm'):
+            player2 = Character("Mage", 40, 5, 4, FIRE)
+            sentinel = False
+        elif(player2Input == 'p'):
+            player2 = Character("Paladin", 50, 6, 5, HOLY)
+            sentinel = False
+        elif(player2Input == "b"):
+            player2 = Character("Barbarian", 60, 5, 6, NORMAL)
+            sentinel = False
+        else:
+            print("Please enter a valid choice...\n\n")
     
-    while(player1.isAlive and player2.isAlive):
-        player1.makeChoice(player2)
-        player2.makeChoice(player1)
+    while(True):
+        if(player1.getHP() > 0 and player2.getHP() > 0):
+            player1.makeChoice(player2)
+            if(player2.getHP() <= 0):
+                print("Player 1 Wins!! GG")
+                break
+            player2.makeChoice(player1)
+            if(player1.getHP() <= 0):
+                print("Player 2 Wins!! GG")
+                break
 
-    
 
 main()
